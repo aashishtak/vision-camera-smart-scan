@@ -201,7 +201,7 @@ The `center` preset restricts barcode detection to the middle 80% x 40% of the c
 
 ## Tested In Production
 
-This package powers barcode scanning in [Melu](https://meluscan.com), a food safety scanner app used by parents to check products at the grocery store. The techniques were developed and validated through real-world testing across hundreds of products in varying lighting conditions.
+This package powers barcode scanning in [Melu](https://heymelu.com), a food safety scanner app used by parents to check products at the grocery store. The techniques were developed and validated through real-world testing across hundreds of products in varying lighting conditions.
 
 ## License
 
