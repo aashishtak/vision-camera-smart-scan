@@ -1,0 +1,58 @@
+{
+  "name": "vision-camera-smart-scan",
+  "version": "1.0.0",
+  "description": "Drop-in barcode scanning upgrade for react-native-vision-camera. ~60% to 90%+ scan success rate with zero native code.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "tsc"
+  },
+  "keywords": [
+    "react-native",
+    "barcode",
+    "scanner",
+    "vision-camera",
+    "qr-code",
+    "ean",
+    "upc",
+    "camera",
+    "expo"
+  ],
+  "author": "Aashish Takkala <aashishreddy@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aashishtak/vision-camera-smart-scan"
+  },
+  "homepage": "https://github.com/aashishtak/vision-camera-smart-scan#readme",
+  "bugs": {
+    "url": "https://github.com/aashishtak/vision-camera-smart-scan/issues"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-native": ">=0.73.0",
+    "react-native-vision-camera": "^4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "expo-haptics": {
+      "optional": true
+    }
+  },
+  "optionalDependencies": {
+    "expo-haptics": ">=14.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "react": "^19.0.0",
+    "react-native": "^0.81.0",
+    "react-native-vision-camera": "^4.7.0",
+    "typescript": "^5.5.0"
+  }
+}
