@@ -1,6 +1,6 @@
 {
   "name": "vision-camera-smart-scan",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Drop-in barcode scanning upgrade for react-native-vision-camera. ~60% to 90%+ scan success rate with zero native code.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
