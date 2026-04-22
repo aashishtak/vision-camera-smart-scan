@@ -1,11 +1,12 @@
 import { useRef, useMemo, useCallback } from 'react';
-import { useCameraDevice, useCodeScanner } from 'react-native-vision-camera';
+import { Camera, useCameraDevice, useCodeScanner } from 'react-native-vision-camera';
 import type {
   CameraDevice,
   PhysicalCameraDeviceType,
   CodeType,
   Code,
 } from 'react-native-vision-camera';
+import type { GestureResponderEvent } from 'react-native';
 
 let Haptics: any = null;
 try {
@@ -52,6 +53,12 @@ export interface SmartScanOptions {
   /** Start at device.neutralZoom for optimal wide-angle framing. @default true */
   smartZoom?: boolean;
 
+  /** Enable native pinch-to-zoom gesture. @default true */
+  enableZoomGesture?: boolean;
+
+  /** Enable tap-to-focus. User taps a point on screen and the camera focuses there. @default true */
+  tapToFocus?: boolean;
+
   /** Physical camera preference for multi-cam device selection. @default ['ultra-wide-angle-camera','wide-angle-camera','telephoto-camera'] */
   physicalDevices?: PhysicalCameraDeviceType[];
 }
@@ -64,7 +71,12 @@ export interface SmartScanResult {
   cameraProps: {
     zoom?: number;
     lowLightBoost?: boolean;
+    enableZoomGesture?: boolean;
+    onTouchEnd?: (e: GestureResponderEvent) => void;
   };
+
+  /** Ref to pass to the <Camera> component. Required for tap-to-focus. */
+  cameraRef: React.RefObject<Camera | null>;
 
   /** Pass to Camera's codeScanner prop. */
   codeScanner: ReturnType<typeof useCodeScanner>;
@@ -83,6 +95,8 @@ export function useSmartScan(options: SmartScanOptions): SmartScanResult {
     haptic = 'light',
     lowLightBoost: enableLowLight = true,
     smartZoom = true,
+    enableZoomGesture = true,
+    tapToFocus = true,
     physicalDevices = [
       'ultra-wide-angle-camera',
       'wide-angle-camera',
@@ -91,6 +105,7 @@ export function useSmartScan(options: SmartScanOptions): SmartScanResult {
   } = options;
 
   const device = useCameraDevice('back', { physicalDevices });
+  const cameraRef = useRef<Camera>(null);
 
   const pendingCodeRef = useRef<string | null>(null);
   const pendingCountRef = useRef(0);
@@ -151,14 +166,29 @@ export function useSmartScan(options: SmartScanOptions): SmartScanResult {
     },
   });
 
+  const handleTouchToFocus = useCallback(
+    (e: GestureResponderEvent) => {
+      if (!tapToFocus || !cameraRef.current || !device?.supportsFocus) return;
+      cameraRef.current
+        .focus({
+          x: e.nativeEvent.locationX,
+          y: e.nativeEvent.locationY,
+        })
+        .catch(() => {});
+    },
+    [tapToFocus, device],
+  );
+
   const cameraProps = useMemo(
     () => ({
       zoom: smartZoom && device ? device.neutralZoom : undefined,
       lowLightBoost:
         enableLowLight && device?.supportsLowLightBoost ? true : undefined,
+      enableZoomGesture: enableZoomGesture || undefined,
+      onTouchEnd: tapToFocus ? handleTouchToFocus : undefined,
     }),
-    [smartZoom, enableLowLight, device],
+    [smartZoom, enableLowLight, enableZoomGesture, tapToFocus, handleTouchToFocus, device],
   );
 
-  return { device, cameraProps, codeScanner, reset };
+  return { device, cameraProps, cameraRef, codeScanner, reset };
 }

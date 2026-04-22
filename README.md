@@ -35,7 +35,7 @@ import { Camera } from 'react-native-vision-camera';
 import { useSmartScan } from 'vision-camera-smart-scan';
 
 function Scanner() {
-  const { device, cameraProps, codeScanner } = useSmartScan({
+  const { device, cameraProps, cameraRef, codeScanner } = useSmartScan({
     onScan: (value) => {
       console.log('Scanned:', value);
     },
@@ -45,6 +45,7 @@ function Scanner() {
 
   return (
     <Camera
+      ref={cameraRef}
       style={StyleSheet.absoluteFill}
       device={device}
       isActive={true}
@@ -68,7 +69,7 @@ function BarcodeScanner() {
   const [isActive, setIsActive] = useState(true);
   const [lastBarcode, setLastBarcode] = useState<string | null>(null);
 
-  const { device, cameraProps, codeScanner, reset } = useSmartScan({
+  const { device, cameraProps, cameraRef, codeScanner, reset } = useSmartScan({
     onScan: (value) => {
       setIsActive(false);
       setLastBarcode(value);
@@ -99,6 +100,7 @@ function BarcodeScanner() {
   return (
     <View style={StyleSheet.absoluteFill}>
       <Camera
+        ref={cameraRef}
         style={StyleSheet.absoluteFill}
         device={device}
         isActive={isActive}
@@ -146,6 +148,8 @@ const styles = StyleSheet.create({
 | `haptic` | `'light' \| 'medium' \| 'heavy' \| 'none'` | `'light'` | Haptic feedback style |
 | `lowLightBoost` | `boolean` | `true` | Enable low-light enhancement |
 | `smartZoom` | `boolean` | `true` | Start at optimal zoom level |
+| `enableZoomGesture` | `boolean` | `true` | Enable native pinch-to-zoom |
+| `tapToFocus` | `boolean` | `true` | Tap a point to focus there |
 | `physicalDevices` | `PhysicalCameraDeviceType[]` | `['ultra-wide-angle-camera', 'wide-angle-camera', 'telephoto-camera']` | Camera lens preference |
 
 #### Region Presets
@@ -162,7 +166,8 @@ const styles = StyleSheet.create({
 | Property | Type | Description |
 |----------|------|-------------|
 | `device` | `CameraDevice \| undefined` | Selected camera device (multi-cam optimized) |
-| `cameraProps` | `{ zoom?, lowLightBoost? }` | Spread onto `<Camera>` |
+| `cameraProps` | `{ zoom?, lowLightBoost?, enableZoomGesture?, onTouchEnd? }` | Spread onto `<Camera>` |
+| `cameraRef` | `RefObject<Camera>` | Pass as `ref` to `<Camera>` (required for tap-to-focus) |
 | `codeScanner` | `CodeScanner` | Pass to Camera's `codeScanner` prop |
 | `reset()` | `() => void` | Reset temporal fusion state |
 
